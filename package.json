@@ -1,0 +1,23 @@
+{
+  "name": "10000HoursTimer_FireBase",
+  "version": "1.0.0",
+  "description": "Firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orochigalois/10000HoursTimer_FireBase.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/orochigalois/10000HoursTimer_FireBase/issues"
+  },
+  "homepage": "https://github.com/orochigalois/10000HoursTimer_FireBase#readme",
+  "dependencies": {
+    "firebase": "^9.6.7"
+  }
+}
