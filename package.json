@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/orochigalois/10000HoursTimer_FireBase#readme",
   "dependencies": {
-    "firebase": "^9.6.7"
+    "firebase": "^9.6.7",
+    "serve": "^13.0.2"
   }
 }

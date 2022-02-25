@@ -1,3 +1,83 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js'
+
+
+// Add Firebase products that you want to use
+import { getAuth, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js'
+import { getDatabase, ref, set, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js'
+
+
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDYYS3ScbmSNxRW356FaSSkAdvpCiwRbDU",
+  authDomain: "hourstimer-dad4b.firebaseapp.com",
+  projectId: "hourstimer-dad4b",
+  databaseURL: "https://hourstimer-dad4b-default-rtdb.firebaseio.com/",
+  storageBucket: "hourstimer-dad4b.appspot.com",
+  messagingSenderId: "1018547992856",
+  appId: "1:1018547992856:web:941511b18478647bec466d",
+  measurementId: "G-7PQT8ENKYE"
+};
+
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const provider = new GoogleAuthProvider(firebaseApp);
+
+var currentUID;
+const db = getDatabase();
+
+const auth = getAuth(firebaseApp);
+signInWithPopup(auth, provider)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access Google APIs.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+
+    // The signed-in user info.
+    const user = result.user;
+    currentUID = user.uid;
+
+
+    //Get timer value
+    const dbref = ref(db);
+
+    var ss = 0, mm = 0, hh = 0;
+
+    get(child(dbref, "users/" + currentUID)).then((snapshot) => {
+      if (snapshot.exists()) {
+        ss = snapshot.val().second;
+        mm = snapshot.val().minute;
+        hh = snapshot.val().hour;
+      }
+      $('.flipTimer').flipTimer({
+        init_seconds: ss,
+        init_minutes: mm,
+        init_hours: hh,
+        step: 1000
+      });
+  
+      $("body").show();
+    })
+    
+
+
+
+
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
 (function ($) {
 
   /**
@@ -46,9 +126,9 @@
     minutes: false,
     hours: false,
     init_seconds: 0,
-    init_minutes:0,
-    init_hours:0,
-    step:1000,
+    init_minutes: 0,
+    init_hours: 0,
+    step: 1000,
     digitTemplate: '' +
       '<div class="digit">' +
       '  <div class="digit-top">' +
@@ -204,12 +284,24 @@
         }
 
         // save to local
-        localStorage.setItem("hours", _this.hours);
-        localStorage.setItem("minutes", _this.minutes);
-        localStorage.setItem("seconds", _this.seconds);
+        // localStorage.setItem("hours", _this.hours);
+        // localStorage.setItem("minutes", _this.minutes);
+        // localStorage.setItem("seconds", _this.seconds);
+
+        set(ref(db, 'users/' + currentUID), {
+          hour: _this.hours,
+          minute: _this.minutes,
+          second: _this.seconds
+        })
+          .then(() => {
+            console.log("data stored - " + _this.hours + ":" + _this.minutes + ":" + _this.seconds);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
 
 
-      },_this.options.step);
+      }, _this.options.step);
     },
 
     /**
